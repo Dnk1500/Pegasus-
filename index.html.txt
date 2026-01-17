@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Copy Trading en Oro (XAUUSD) | Robot Pegasus</title>
+  <meta name="description" content="Calcula tu rentabilidad estimada con Copy Trading en Oro (XAUUSD) en Forex con el Robot Pegasus. Rentabilidad media 4,4% mensual." />
+
+  <style>
+    :root{
+      --bg:#0b1224;
+      --panel:#020617;
+      --panel2:#07122a;
+      --text:#e5e7eb;
+      --muted:#9aa7bd;
+      --primary:#38bdf8;
+      --primary2:#60a5fa;
+      --success:#22c55e;
+      --warning:#fbbf24;
+      --shadow: 0 0 28px rgba(56,189,248,.14);
+      --radius: 16px;
+      --border: rgba(148,163,184,.14);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Helvetica Neue", Helvetica, "Noto Sans", "Liberation Sans", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1100px 700px at 12% -5%, rgba(56,189,248,.16), transparent 60%),
+        radial-gradient(900px 650px at 95% 10%, rgba(34,197,94,.10), transparent 55%),
+        radial-gradient(800px 600px at 60% 110%, rgba(251,191,36,.07), transparent 50%),
+        linear-gradient(180deg, #070b16 0%, var(--bg) 35%, #070b16 100%);
+    }
+
+    a{color:inherit}
+    .container{
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 56px 18px 28px;
+    }
+
+    /* Header / hero */
+    header{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    @media (max-width: 920px){
+      header{grid-template-columns:1fr}
+      .container{padding-top:36px}
+    }
+
+    .hero{
+      padding: 28px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(2,6,23,.92), rgba(2,6,23,.76));
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow:hidden;
+    }
+    .hero:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(420px 260px at 25% 15%, rgba(56,189,248,.18), transparent 60%),
+        radial-gradient(420px 260px at 85% 40%, rgba(34,197,94,.10), transparent 55%);
+      pointer-events:none;
+      opacity:.9;
+    }
+    .hero > *{position:relative}
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 12px;
+      border-radius: 999px;
+      width: fit-content;
+      background: rgba(56,189,248,.10);
+      border: 1px solid rgba(56,189,248,.22);
+      color: #bfefff;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: var(--success);
+      box-shadow: 0 0 0 6px rgba(34,197,94,.16);
+    }
+
+    h1{
+      margin: 14px 0 10px;
+      line-height:1.08;
+      font-size: clamp(30px, 4vw, 46px);
+      background: linear-gradient(90deg, #7dd3fc, #60a5fa);
+      -webkit-background-clip:text;
+      background-clip:text;
+      color: transparent;
+      letter-spacing: -.4px;
+    }
+    .lead{
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 16px;
+      max-width: 64ch;
+    }
+    .lead strong{color: var(--text)}
+
+    .pill-row{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+    .pill{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,.16);
+      background: rgba(15,23,42,.55);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* CTA card */
+    .cta-card{
+      padding: 22px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(7,18,42,.92), rgba(2,6,23,.78));
+      box-shadow: var(--shadow);
+      display:flex;
+      flex-direction:column;
+      gap: 12px;
+    }
+    .cta-card h2{
+      margin:0;
+      color: #bfefff;
+      font-size: 20px;
+    }
+    .small{
+      margin:0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.45;
+    }
+
+    .btn{
+      display:inline-flex;
+      justify-content:center;
+      align-items:center;
+      gap:10px;
+      width:100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-weight: 900;
+      text-decoration:none;
+      border: 0;
+      cursor:pointer;
+      background: linear-gradient(90deg, var(--primary), var(--primary2));
+      color: #041025;
+      transition: transform .08s ease, filter .16s ease;
+    }
+    .btn:hover{filter: brightness(1.06)}
+    .btn:active{transform: translateY(1px)}
+    .btn.secondary{
+      background: transparent;
+      color: var(--text);
+      border: 1px solid rgba(56,189,248,.35);
+    }
+
+    /* Main grid */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      margin-top: 18px;
+      align-items:start;
+    }
+    @media (max-width: 920px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      padding: 26px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(2,6,23,.92), rgba(2,6,23,.78));
+      box-shadow: var(--shadow);
+    }
+    .card h2{
+      margin:0 0 8px;
+      color: #bfefff;
+      font-size: 22px;
+    }
+    .card p{margin: 8px 0 0; color: var(--muted); line-height: 1.55}
+
+    /* Calculator */
+    .field{
+      margin-top: 14px;
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+    }
+    label{
+      color: var(--muted);
+      font-size: 14px;
+    }
+    input{
+      width: 100%;
+      padding: 14px 14px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: 1px solid rgba(148,163,184,.18);
+      outline: none;
+      background: rgba(15,23,42,.55);
+      color: var(--text);
+    }
+    input:focus{
+      border-color: rgba(56,189,248,.6);
+      box-shadow: 0 0 0 4px rgba(56,189,248,.16);
+    }
+
+    .results{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    @media (max-width: 560px){ .results{grid-template-columns:1fr} }
+
+    .stat{
+      background: rgba(15,23,42,.55);
+      border: 1px solid rgba(148,163,184,.12);
+      border-radius: 12px;
+      padding: 14px;
+    }
+    .stat .k{
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .stat .v{
+      margin-top: 6px;
+      font-size: 20px;
+      font-weight: 950;
+      letter-spacing: .2px;
+    }
+    .highlight{color: var(--success)}
+    .warn{color: var(--warning)}
+
+    .note{
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.45;
+      border-top: 1px solid rgba(148,163,184,.12);
+      padding-top: 12px;
+    }
+
+    /* Right column lists */
+    ul{margin: 10px 0 0; padding-left: 18px; color: var(--text)}
+    li{margin: 8px 0; color: var(--text)}
+    li span{color: var(--muted)}
+
+    /* Footer */
+    footer{
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(148,163,184,.12);
+      font-size: 13px;
+      color: var(--muted);
+      text-align:center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+
+    <header>
+      <section class="hero">
+        <div class="badge"><span class="dot"></span> Robot Pegasus · Copy Trading en Oro (XAUUSD) · Forex</div>
+        <h1>Calcula tu rentabilidad en euros en 10 segundos</h1>
+        <p class="lead">
+          Introduce tu inversión y obtén una <strong>estimación</strong> de ganancia mensual y anual
+          basada en una <strong>rentabilidad media del 4,4% mensual</strong> para operativa en <strong>Oro (XAUUSD)</strong>.
+        </p>
+
+        <div class="pill-row" aria-label="Beneficios clave">
+          <div class="pill">Operas en tu cuenta</div>
+          <div class="pill">Sin custodia</div>
+          <div class="pill">Enfoque XAUUSD</div>
+          <div class="pill">Automatizado</div>
+        </div>
+      </section>
+
+      <aside class="cta-card">
+        <h2>Acceso por Telegram</h2>
+        <p class="small">
+          Para información y acceso al copy trading, abre el bot en Telegram.
+        </p>
+        <a class="btn" href="https://t.me/victoriafxbot" target="_blank" rel="noopener">
+          Ir a Telegram · @victoriafxbot
+        </a>
+        <a class="btn secondary" href="#calculadora">Ver calculadora</a>
+        <p class="small">
+          Respuesta rápida y sin formularios.
+        </p>
+      </aside>
+    </header>
+
+    <main class="grid">
+      <section class="card" id="calculadora">
+        <h2>Calculadora (4,4% mensual)</h2>
+        <p>Resultados orientativos en <strong>€</strong>. No incluye comisiones ni variaciones del mercado.</p>
+
+        <div class="field">
+          <label for="investment">Tu inversión (€)</label>
+          <input
+            type="number"
+            id="investment"
+            inputmode="decimal"
+            min="0"
+            step="50"
+            placeholder="Ejemplo: 1000"
+            oninput="calculate()"
+            aria-describedby="helper"
+          />
+          <div id="helper" class="small">Consejo: prueba con 500€, 1000€, 2500€…</div>
+        </div>
+
+        <div class="results" aria-live="polite">
+          <div class="stat">
+            <div class="k">Ganancia mensual estimada</div>
+            <div class="v highlight" id="monthly">0,00 €</div>
+          </div>
+
+          <div class="stat">
+            <div class="k">Ganancia anual estimada</div>
+            <div class="v highlight" id="yearly">0,00 €</div>
+          </div>
+
+          <div class="stat">
+            <div class="k">Capital final al mes</div>
+            <div class="v" id="endMonth">0,00 €</div>
+          </div>
+
+          <div class="stat">
+            <div class="k">Capital final al año</div>
+            <div class="v" id="endYear">0,00 €</div>
+          </div>
+        </div>
+
+        <div class="note">
+          <strong class="warn">Aviso de riesgo:</strong> la rentabilidad pasada no garantiza resultados futuros.
+          El trading en Forex/Oro (XAUUSD) conlleva riesgo y puedes perder capital.
+          Esta calculadora es informativa y no constituye asesoramiento financiero.
+        </div>
+
+        <div style="margin-top:16px;">
+          <a class="btn" href="https://t.me/victoriafxbot" target="_blank" rel="noopener">
+            Quiero acceder por Telegram
+          </a>
+        </div>
+      </section>
+
+      <aside class="card">
+        <h2>Qué incluye</h2>
+        <ul>
+          <li><strong>Activo:</strong> <span>Oro (XAUUSD)</span></li>
+          <li><strong>Mercado:</strong> <span>Forex</span></li>
+          <li><strong>Modalidad:</strong> <span>Copy Trading (copias operaciones)</span></li>
+          <li><strong>Ejecución:</strong> <span>Robot Pegasus (automatización)</span></li>
+          <li><strong>Control:</strong> <span>tu capital en tu cuenta (sin custodia)</span></li>
+        </ul>
+
+        <h2 style="margin-top:18px;">Cómo empezar</h2>
+        <ul>
+          <li><strong>1)</strong> <span>Calcula tu estimación arriba</span></li>
+          <li><strong>2)</strong> <span>Entra al bot en Telegram</span></li>
+          <li><strong>3)</strong> <span>Recibe los pasos para activar el copy trading</span></li>
+        </ul>
+
+        <div style="margin-top:16px;">
+          <a class="btn" href="https://t.me/victoriafxbot" target="_blank" rel="noopener">
+            Abrir Telegram ahora
+          </a>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      <p style="margin:0;">* La rentabilidad pasada no garantiza resultados futuros. El trading conlleva riesgo.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const MONTHLY_RATE = 0.044; // 4,4% mensual (fijo)
+
+    const eur = new Intl.NumberFormat("es-ES", {
+      style: "currency",
+      currency: "EUR",
+      maximumFractionDigits: 2
+    });
+
+    function toNumber(value) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : 0;
+    }
+
+    function calculate() {
+      const investment = toNumber(document.getElementById("investment").value);
+
+      const monthly = investment * MONTHLY_RATE;
+      const yearly  = monthly * 12;
+
+      const endMonth = investment + monthly;
+      const endYear  = investment + yearly;
+
+      document.getElementById("monthly").innerText  = eur.format(monthly);
+      document.getElementById("yearly").innerText   = eur.format(yearly);
+      document.getElementById("endMonth").innerText = eur.format(endMonth);
+      document.getElementById("endYear").innerText  = eur.format(endYear);
+    }
+  </script>
+</body>
+</html>
